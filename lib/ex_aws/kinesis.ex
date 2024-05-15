@@ -69,9 +69,9 @@ defmodule ExAws.Kinesis do
 
   @doc "Get stream records"
   @type get_records_opts :: [
-          {:limit, pos_integer}
+          {:limit, pos_integer},
+          {:arn, String.t()}
         ]
-  @spec get_records(shard_iterator :: binary) :: ExAws.Operation.JSON.t()
   @spec get_records(shard_iterator :: binary, opts :: get_records_opts) ::
           ExAws.Operation.JSON.t()
   def get_records(shard_iterator, opts \\ []) do
@@ -79,6 +79,13 @@ defmodule ExAws.Kinesis do
       opts
       |> camelize_keys()
       |> Map.merge(%{"ShardIterator" => shard_iterator})
+
+    data =
+      if arn = opts[:arn] do
+        Map.put(data, "StreamARN", arn)
+      else
+        data
+      end
 
     request(:get_records, data, %{parser: &decode_records/1})
   end
@@ -175,7 +182,7 @@ defmodule ExAws.Kinesis do
       |> Map.merge(name_args(stream_name))
       |> Map.merge(%{
         "ShardId" => shard_id,
-        "ShardIteratorType" => shard_iterator_type |> upcase
+        "ShardIteratorType" => upcase(shard_iterator_type)
       })
 
     request(:get_shard_iterator, data)
