@@ -7,7 +7,7 @@ defmodule ExAws.KinesisIntegrationTest do
   #
 
   test "#list_streams" do
-    assert {:ok, %{"HasMoreStreams" => _, "StreamNames" => _}} = ExAws.Kinesis.list_streams |> ExAws.request
+    assert {:ok, %{"HasMoreStreams" => _, "StreamNames" => _}} =
+             ExAws.Kinesis.list_streams() |> ExAws.request()
   end
-
 end
