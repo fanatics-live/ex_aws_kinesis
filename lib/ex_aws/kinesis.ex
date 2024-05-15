@@ -53,7 +53,7 @@ defmodule ExAws.Kinesis do
     data =
       stream_name
       |> name_args()
-      |> Map.put("ShardCount", 1)
+      |> Map.put("ShardCount", shard_count)
 
     request(:create_stream, data)
   end
